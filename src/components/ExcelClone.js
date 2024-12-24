@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-
 const ROWS = 20;
-const COLS = 26; // A to Z
-const MAX_CELL_LENGTH = 50; // Maximum characters allowed in a cell
+const COLS = 26; 
+const MAX_CELL_LENGTH = 50;
+
+const Tooltip = ({ text, position }) => {
+  return (
+    <div className={`tooltip ${position}`}>
+      {text}
+    </div>
+  );
+};
 
 const ExcelClone = () => {
   // State for cell data
@@ -75,23 +82,19 @@ const ExcelClone = () => {
   const handleCellChange = (rowIndex, colIndex, value) => {
     const isNumeric = numericCells[rowIndex][colIndex];
     const error = validateCell(value, isNumeric);
-    
-    // Update errors
     const newErrors = [...errors];
     newErrors[rowIndex][colIndex] = error;
     setErrors(newErrors);
     
     if (!error) {
-      // Only update both data and formula bar if valid
       const newData = [...data];
       newData[rowIndex][colIndex] = value;
       setData(newData);
       setFormulaBarValue(value);
     } else {
-      // If invalid, keep the old value in both data and formula bar
       setFormulaBarValue(data[rowIndex][colIndex]);
     }
-  };
+};
 
   // Handle formula bar change
   const handleFormulaBarChange = (value) => {
@@ -166,29 +169,29 @@ const ExcelClone = () => {
                   {rowIndex + 1}
                 </td>
                 {Array(COLS).fill().map((_, colIndex) => (
-                  <td
-                    key={colIndex}
-                    className={`border border-gray-300 p-0 relative ${
-                      selectedCell?.row === rowIndex && selectedCell?.col === colIndex
-                        ? 'bg-blue-50'
-                        : ''
-                    }`}
-                  >
-                    <input
-                      type="text"
-                      className={`w-full h-full px-2 py-1 border-none outline-none bg-transparent ${
-                        errors[rowIndex][colIndex] ? 'border-2 border-red-500' : ''
-                      }`}
-                      value={data[rowIndex][colIndex]}
-                      onChange={(e) => handleCellChange(rowIndex, colIndex, e.target.value)}
-                      onClick={() => handleCellSelect(rowIndex, colIndex)}
-                    />
-                    {errors[rowIndex][colIndex] && (
-                      <div className="absolute -bottom-6 left-0 bg-red-100 text-red-600 text-xs p-1 rounded shadow z-10">
-                        {errors[rowIndex][colIndex]}
-                      </div>
-                    )}
-                  </td>
+                <td
+                key={colIndex}
+                className={`border border-gray-300 p-0 relative ${
+                  selectedCell?.row === rowIndex && selectedCell?.col === colIndex
+                    ? 'bg-blue-50'
+                    : ''
+                }`}
+              >
+                <input
+                  type="text"
+                  className={`w-full h-full px-2 py-1 border-none outline-none bg-transparent ${
+                    errors[rowIndex][colIndex] ? 'border-2 border-red-500' : ''
+                  }`}
+                  value={data[rowIndex][colIndex]}
+                  onChange={(e) => handleCellChange(rowIndex, colIndex, e.target.value)}
+                  onClick={() => handleCellSelect(rowIndex, colIndex)}
+                />
+                {errors[rowIndex][colIndex] && (
+                  <div className="absolute -bottom-6 left-0 bg-red-100 text-red-600 text-xs p-1 rounded shadow z-10">
+                    {errors[rowIndex][colIndex]}
+                  </div>
+                )}
+              </td>
                 ))}
               </tr>
             ))}
